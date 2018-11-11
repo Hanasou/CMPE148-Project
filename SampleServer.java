@@ -9,27 +9,44 @@ import java.util.*;
  */
 public class SampleServer {
 
-	private static Socket socket;
-	private static ServerSocket server;
+	private static Socket client = null;
+	private static ServerSocket server = null;
+	//private BufferedReader stdin = null;
+	private DataInputStream in = null;
+	//private DataOutputStream out = null;
 
-	public static void main(String[] args) throws IOException {
+	public SampleServer(int port) {
 		try {
 			//Set up a server with this port.
-			server = new ServerSocket(6066);
+			server = new ServerSocket(port);
 			System.out.println("Server Active");
 			
-			//socket = server.accept();
-			//System.out.println("Client Connected");
+			client = server.accept();
+			System.out.println("Client Connected");
+			
+			//stdin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
+			
+			String input = "";
+			while (!input.equals("Client Writes: Over")) {
+				try {
+					input = in.readUTF();
+					System.out.println(input);
+				}
+				catch(IOException e) {
+					System.out.println(e);
+				}
+			}
+				client.close();
+				//stdin.close();
+				in.close();
 		}
 		catch (IOException e) {
 			System.out.println(e);
 		}
+	}
+	public static void main(String[] args) {
+		SampleServer server = new SampleServer(6000);
 		
-		//infinite loop to keep connection going
-		while (true) {
-			//ServerSocket accepts client connections
-			socket = server.accept();
-			System.out.println("Client Connected");
-		}
 	}
 }
