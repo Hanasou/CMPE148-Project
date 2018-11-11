@@ -13,6 +13,7 @@ public class SampleClient {
 	private BufferedReader stdin = null;
 	private DataInputStream in = null;
 	private DataOutputStream out = null;
+	private File clientDirectory = null;
 	
 	public SampleClient(String host, int port) {
 		try {
@@ -22,16 +23,62 @@ public class SampleClient {
 			stdin = new BufferedReader(new InputStreamReader(System.in));
 			in = new DataInputStream(System.in);
 			out = new DataOutputStream(client.getOutputStream());
+			clientDirectory = new File("client_directory");
 		}
 		catch (IOException e) {
 			System.out.println(e);
 		}
-		
+		System.out.println("Welcome. Type /help for commands, /q to quit.");
 		String input = "";
-		while (!input.equals("Over")) {
+		while (!input.equals("/q")) {
 			try {
 				input = stdin.readLine();
-				out.writeUTF("Client Writes: " + input);
+				
+				if (input.equals("/help")) {
+					System.out.println("'/check server dir' to look inside server directory");
+					System.out.println("'/check client dir' to look inside client directory");
+					System.out.println("'/download' to download a file from the server directory");
+					System.out.println("'/upload' to upload a file to the server directory");
+					System.out.println("'/create' to make a new file into client directory");
+					System.out.println("'/write' to write data on an existing file");
+				}
+				else if (input.equals("/create")) {
+					System.out.println("Enter file name: ");
+					String fileName = stdin.readLine();
+					File file = new File("client_directory/" + fileName);
+					//file.createNewFile();
+					if (file.createNewFile()) {
+						System.out.println("Created file: " + fileName);
+					}
+					else {
+						System.out.println("File already exists");
+					}
+				}
+				else if (input.equals("/check client dir")) {
+					String [] files = clientDirectory.list();
+					for (int i = 0; i < files.length - 1; i++) {
+						System.out.println(files[i]);
+					}
+				}
+				else if (input.equals("/write")) {
+					System.out.println("Enter file name");
+					String fileName = stdin.readLine();
+					File file = new File("client_directory/" + fileName);
+					if (file.exists()) {
+						System.out.println("Write data: ");
+						FileWriter writer = new FileWriter(file);
+						String writeData = stdin.readLine();
+						writer.write(writeData);
+						System.out.println("File modified");
+						writer.close();
+					}
+					else {
+						System.out.println("File not found");
+					}
+				}
+				else {
+					
+				}
 			}
 			catch (IOException e) {
 				System.out.println(e);

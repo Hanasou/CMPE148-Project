@@ -11,7 +11,7 @@ public class SampleServer {
 
 	private static Socket client = null;
 	private static ServerSocket server = null;
-	//private BufferedReader stdin = null;
+	private BufferedReader stdin = null;
 	private DataInputStream in = null;
 	//private DataOutputStream out = null;
 
@@ -24,22 +24,22 @@ public class SampleServer {
 			client = server.accept();
 			System.out.println("Client Connected");
 			
-			//stdin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			stdin = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 			
 			String input = "";
-			while (!input.equals("Client Writes: Over")) {
+			while (stdin.readLine() != null) {
 				try {
 					input = in.readUTF();
-					System.out.println(input);
 				}
 				catch(IOException e) {
 					System.out.println(e);
 				}
 			}
-				client.close();
-				//stdin.close();
-				in.close();
+			System.out.println("Connected Ended");
+			client.close();
+			stdin.close();
+			in.close();
 		}
 		catch (IOException e) {
 			System.out.println(e);
