@@ -56,7 +56,7 @@ public class SampleClient {
 				}
 				else if (input.equals("/check client dir")) {
 					String [] files = clientDirectory.list();
-					for (int i = 0; i < files.length - 1; i++) {
+					for (int i = 0; i < files.length; i++) {
 						System.out.println(files[i]);
 					}
 				}
