@@ -22,11 +22,15 @@ public class SampleServer {
 			server = new ServerSocket(port);
 			System.out.println("Server Active");
 			
+			//This sets up the connection between client and server.
 			client = server.accept();
 			System.out.println("Client Connected");
 			System.out.println("Server Log");
+			//Input and output streams for receiving/sending information between client/server.
+			//Takes information from client (input stream) and sends information to client (output stream).
 			in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 			out = new DataOutputStream(client.getOutputStream());
+			//The directory where all the files on the server are located.
 			serverDirectory = new File("server_directory");
 			
 			String input = "";
@@ -34,12 +38,14 @@ public class SampleServer {
 				try {
 					input = in.readUTF();
 					System.out.println(input);
+					//If client inputs /check server dir then the server does this.
 					if (input.equals("/check server dir")) {
 						String[] files = serverDirectory.list();
 						StringBuilder builder = new StringBuilder();
 						for (String s : files) {
 							builder.append(s + '\n');
 						}
+						//server writes out the list of files into the client's output stream. Client will read from it and display on its console.
 						out.writeUTF(builder.toString());
 					}
 				}
