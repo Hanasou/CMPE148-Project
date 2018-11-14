@@ -11,8 +11,9 @@ public class SampleServer {
 
 	private static Socket client = null;
 	private static ServerSocket server = null;
-	private BufferedReader stdin = null;
 	private DataInputStream in = null;
+	private DataOutputStream out = null;
+	private File serverDirectory = null;
 	//private DataOutputStream out = null;
 
 	public SampleServer(int port) {
@@ -23,14 +24,24 @@ public class SampleServer {
 			
 			client = server.accept();
 			System.out.println("Client Connected");
-			
-			stdin = new BufferedReader(new InputStreamReader(client.getInputStream()));
+			System.out.println("Server Log");
 			in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
+			out = new DataOutputStream(client.getOutputStream());
+			serverDirectory = new File("server_directory");
 			
 			String input = "";
-			while (stdin.readLine() != null) {
+			while (!input.equals("/q")) {
 				try {
 					input = in.readUTF();
+					System.out.println(input);
+					if (input.equals("/check server dir")) {
+						String[] files = serverDirectory.list();
+						StringBuilder builder = new StringBuilder();
+						for (String s : files) {
+							builder.append(s + '\n');
+						}
+						out.writeUTF(builder.toString());
+					}
 				}
 				catch(IOException e) {
 					System.out.println(e);
@@ -38,7 +49,7 @@ public class SampleServer {
 			}
 			System.out.println("Connected Ended");
 			client.close();
-			stdin.close();
+			out.close();
 			in.close();
 		}
 		catch (IOException e) {

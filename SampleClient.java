@@ -21,7 +21,7 @@ public class SampleClient {
 			client = new Socket(host, port);
 			System.out.println("Connected");
 			stdin = new BufferedReader(new InputStreamReader(System.in));
-			in = new DataInputStream(System.in);
+			in = new DataInputStream(client.getInputStream());
 			out = new DataOutputStream(client.getOutputStream());
 			clientDirectory = new File("client_directory");
 		}
@@ -33,7 +33,7 @@ public class SampleClient {
 		while (!input.equals("/q")) {
 			try {
 				input = stdin.readLine();
-				
+				out.writeUTF(input);
 				if (input.equals("/help")) {
 					System.out.println("'/check server dir' to look inside server directory");
 					System.out.println("'/check client dir' to look inside client directory");
@@ -60,6 +60,10 @@ public class SampleClient {
 						System.out.println(files[i]);
 					}
 				}
+				else if (input.equals("/check server dir")) {
+					System.out.println("Checking Files in Server Directory");
+					System.out.println(in.readUTF());
+				}
 				else if (input.equals("/write")) {
 					System.out.println("Enter file name");
 					String fileName = stdin.readLine();
@@ -85,9 +89,6 @@ public class SampleClient {
 			}
 		}
 		System.out.println("Connected Ended");
-		//System.out.println("What do you want to do here?");
-		//System.out.println("(1) Upload File");
-		//System.out.println("(2) Download File");
 		
 		try {
 			in.close();
