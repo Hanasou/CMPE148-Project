@@ -48,6 +48,18 @@ public class SampleServer {
 						//server writes out the list of files into the client's output stream. Client will read from it and display on its console.
 						out.writeUTF(builder.toString());
 					}
+					else if (input.equals("/download")) {
+						String fileName = in.readUTF();
+						System.out.println("Sending: " + fileName);
+						File file = new File("server_directory/" + fileName);
+						byte[] bytes = new byte[1024];
+						FileInputStream fileIn = new FileInputStream(file);
+						int count;
+						while ((count = fileIn.read(bytes)) > 0) {
+				            out.write(bytes, 0, count);
+				        }
+						System.out.println("Sent");
+					}
 				}
 				catch(IOException e) {
 					System.out.println(e);

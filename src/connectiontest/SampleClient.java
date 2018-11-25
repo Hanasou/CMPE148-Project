@@ -97,6 +97,17 @@ public class SampleClient {
 				}
 				else if (input.equals("/download")) {
 					//TODO: Looks at a file from the server_directory and writes it onto the client_directory
+					System.out.println("Enter name of the file you want to download");
+					String fileName = stdin.readLine();
+					out.writeUTF(fileName);
+					File file = new File("client_directory/" + fileName);
+					file.createNewFile();
+					FileOutputStream fileOut = new FileOutputStream("client_directory/" + fileName);
+					byte[] bytes = new byte[1024];
+					int count = in.read(bytes);
+					System.out.println("File received. Downloading: ");
+					fileOut.write(bytes, 0, count);
+				    System.out.println("Downloaded");
 				}
 				else if (input.equals("/upload")) {
 					//TODO: Looks at a file from the client_directory and writes it onto the server_directory
