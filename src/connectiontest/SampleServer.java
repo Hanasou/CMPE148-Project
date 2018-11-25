@@ -60,6 +60,18 @@ public class SampleServer {
 				        }
 						System.out.println("Sent");
 					}
+					else if (input.equals("/upload")) {
+						String fileName = in.readUTF();
+						System.out.println("Receiving: " + fileName);
+						File file = new File("server_directory/" + fileName);
+						file.createNewFile();
+						FileOutputStream fileOut = new FileOutputStream("server_directory/" + fileName);
+						byte[] bytes = new byte[1024];
+						int count = in.read(bytes);
+						System.out.println("File received. Downloading: ");
+						fileOut.write(bytes, 0, count);
+					    System.out.println("Downloaded");
+					}
 				}
 				catch(IOException e) {
 					System.out.println(e);
