@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Sample Client that does nothing.
+ * Sample Client that does transfer stuff.
  */
 public class SampleClient {
 
@@ -111,9 +111,21 @@ public class SampleClient {
 				}
 				else if (input.equals("/upload")) {
 					//TODO: Looks at a file from the client_directory and writes it onto the server_directory
+					System.out.println("Enter name of the file you want to download");
+					String fileName = stdin.readLine();
+					out.writeUTF(fileName);
+					System.out.println("Sending: " + fileName);
+					File file = new File("client_directory/" + fileName);
+					byte[] bytes = new byte[1024];
+					FileInputStream fileIn = new FileInputStream(file);
+					int count;
+					while ((count = fileIn.read(bytes)) > 0) {
+			            out.write(bytes, 0, count);
+			        }
+					System.out.println("Sent");
 				}
 				else {
-					
+					System.out.println("Invalid input. Type /help for commands.");
 				}
 			}
 			catch (IOException e) {
